@@ -2,9 +2,18 @@
 
 import { useAppStore } from '@/stores/useAppStore';
 import { t } from '@/lib/i18n';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { activeTab, setActiveTab, isDark, toggleDark, toggleLocale, locale, burnoutScore } = useAppStore();
+  const { activeTab, setActiveTab, isDark, toggleDark, toggleLocale, locale, burnoutScore, user } = useAppStore();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.refresh();
+  };
 
   const tabs = [
     { key: 'home' as const, label: t('tabFocus', locale), icon: '🎯' },
@@ -43,6 +52,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               {isDark ? '☀️' : '🌙'}
             </button>
+            {/* Sign Out */}
+            {user && (
+              <button
+                onClick={handleSignOut}
+                className="h-8 px-2 rounded-lg flex items-center justify-center hover:bg-danger-soft hover:text-danger transition-colors text-xs font-semibold border border-border gap-1 ml-2"
+                aria-label="Sign out"
+              >
+                Log Out
+              </button>
+            )}
           </div>
         </div>
       </header>

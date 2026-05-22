@@ -298,6 +298,7 @@ export function t(key: TranslationKey, locale: Locale): string {
 }
 
 // Get translated function (for parameterized strings)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function tf<T extends (...args: any[]) => string>(
   key: TranslationKey,
   locale: Locale

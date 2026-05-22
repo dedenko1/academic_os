@@ -15,7 +15,7 @@ const TIME_OPTIONS = [15, 25, 45, 60, 90, 120];
 export function HomePage() {
   const {
     tasks, currentEnergy, setEnergy, availableMinutes, setAvailableMinutes,
-    burnoutScore, updateTaskStatus, locale,
+    burnoutScore, updateTaskStatus, locale, skipRecommendation, acceptRecommendation
   } = useAppStore();
   const [isWorking, setIsWorking] = useState(false);
 
@@ -33,8 +33,15 @@ export function HomePage() {
 
   const handleStartWorking = () => {
     if (recommendation.task) {
+      acceptRecommendation(recommendation.task.id);
       updateTaskStatus(recommendation.task.id, 'in_progress');
       setIsWorking(true);
+    }
+  };
+
+  const handleSkip = () => {
+    if (recommendation.task) {
+      skipRecommendation(recommendation.task.id);
     }
   };
 
@@ -85,6 +92,19 @@ export function HomePage() {
           <p className="text-lg sm:text-xl font-semibold leading-snug pr-8">
             {recommendation.message}
           </p>
+          
+          {/* Batched Subtasks UI */}
+          {recommendation.suggestedSubtasks && recommendation.suggestedSubtasks.length > 1 && (
+            <div className="mt-2 pl-3 border-l-2 border-accent/30 space-y-2">
+              {recommendation.suggestedSubtasks.map((st, i) => (
+                <div key={st.id} className="flex items-center gap-2 text-sm">
+                  <span className="text-accent/70 font-medium">{i + 1}.</span>
+                  <span className="font-medium">{st.title}</span>
+                  <span className="text-xs text-muted">({st.estimatedMinutes}m)</span>
+                </div>
+              ))}
+            </div>
+          )}
 
           {recommendation.task && (
             <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -119,15 +139,24 @@ export function HomePage() {
           </p>
 
           {recommendation.type === 'task' && (
-            <div className="flex gap-3 pt-1">
+            <div className="flex flex-wrap gap-3 pt-1">
               {!isWorking ? (
-                <button
-                  onClick={handleStartWorking}
-                  className="px-5 py-2.5 bg-accent text-white rounded-xl font-medium text-sm
-                    hover:opacity-90 active:scale-[0.98] transition-all duration-150 shadow-md shadow-accent/20"
-                >
-                  {t('startWorking', locale)}
-                </button>
+                <>
+                  <button
+                    onClick={handleStartWorking}
+                    className="px-5 py-2.5 bg-accent text-white rounded-xl font-medium text-sm
+                      hover:opacity-90 active:scale-[0.98] transition-all duration-150 shadow-md shadow-accent/20"
+                  >
+                    {t('startWorking', locale)}
+                  </button>
+                  <button
+                    onClick={handleSkip}
+                    className="px-5 py-2.5 bg-surface border border-border rounded-xl font-medium text-sm text-muted
+                      hover:bg-surface-hover hover:text-foreground transition-all duration-150"
+                  >
+                    {locale === 'en' ? 'Skip / Another Option' : 'Lewati / Cari Opsi Lain'}
+                  </button>
+                </>
               ) : (
                 <>
                   <button

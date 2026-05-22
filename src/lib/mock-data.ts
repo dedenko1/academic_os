@@ -3,7 +3,7 @@
 // Realistic demo data for MVP
 // ============================================
 
-import { Course, Task, EnergyLog, BurnoutScore, DayBurnout, StudySession } from '@/types';
+import { Course, Task, EnergyLog, DayBurnout, StudySession } from '@/types';
 
 export const MOCK_COURSES: Course[] = [
   { id: 'c1', name: 'Data Structures', code: 'CS201', color: '#6366f1' },
@@ -17,7 +17,7 @@ const now = new Date();
 const addDays = (d: number) => new Date(now.getTime() + d * 86400000).toISOString();
 const addHours = (h: number) => new Date(now.getTime() + h * 3600000).toISOString();
 
-export const MOCK_TASKS: Task[] = [
+export const MOCK_TASKS: any[] = [
   {
     id: 't1',
     courseId: 'c2',
@@ -169,17 +169,22 @@ export const MOCK_STUDY_SESSIONS: StudySession[] = [
   { id: 'ss3', taskId: 't1', date: addDays(0), durationMinutes: 60, energyBefore: 3, energyAfter: 2 },
 ];
 
+import { useAppStore } from '@/stores/useAppStore';
+
 export function getCourseName(courseId: string | null): string {
   if (!courseId) return 'General';
-  return MOCK_COURSES.find(c => c.id === courseId)?.name ?? 'Unknown';
+  const courses = useAppStore.getState().courses;
+  return courses.find(c => c.id === courseId)?.name ?? 'Unknown';
 }
 
 export function getCourseCode(courseId: string | null): string {
   if (!courseId) return '';
-  return MOCK_COURSES.find(c => c.id === courseId)?.code ?? '';
+  const courses = useAppStore.getState().courses;
+  return courses.find(c => c.id === courseId)?.code ?? '';
 }
 
 export function getCourseColor(courseId: string | null): string {
   if (!courseId) return '#8a8a8a';
-  return MOCK_COURSES.find(c => c.id === courseId)?.color ?? '#8a8a8a';
+  const courses = useAppStore.getState().courses;
+  return courses.find(c => c.id === courseId)?.color ?? '#8a8a8a';
 }

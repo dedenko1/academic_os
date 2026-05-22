@@ -29,6 +29,8 @@ export interface Task {
   createdAt: string;
   completedAt: string | null;
   subtasks: Subtask[];
+  skipCount: number;
+  lastSkippedAt: string | null;
 }
 
 export interface Subtask {
@@ -68,8 +70,20 @@ export interface StudySession {
 export interface Recommendation {
   type: 'task' | 'break' | 'no_match';
   task: Task | null;
+  suggestedSubtasks?: Subtask[]; // For knapsack batched subtasks
   message: string;
   reason: string;
+}
+
+export interface RecommendationEvent {
+  id: string;
+  userId: string;
+  taskId: string | null;
+  action: 'accepted' | 'skipped' | 'ignored';
+  energyLevel: number;
+  burnoutScore: number;
+  contextNotes?: string;
+  createdAt: string;
 }
 
 export interface DayBurnout {

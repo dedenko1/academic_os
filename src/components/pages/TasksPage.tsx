@@ -1,11 +1,11 @@
 'use client';
 
 import { useAppStore } from '@/stores/useAppStore';
-import { getCourseCode, getCourseColor, MOCK_COURSES } from '@/lib/mock-data';
+import { getCourseCode, getCourseColor } from '@/lib/mock-data';
 import { getDifficultyLabel, getUrgencyLabel } from '@/lib/priority-engine';
 import { t } from '@/lib/i18n';
 import { colorClass } from '@/lib/color-map';
-import { Task, Difficulty, Impact } from '@/types';
+import { Task, Difficulty, Impact, Course } from '@/types';
 import { useState } from 'react';
 
 type FilterStatus = 'all' | 'pending' | 'in_progress' | 'done';
@@ -288,7 +288,7 @@ function TaskCard({
 }
 
 function TaskForm({ courses, locale, onAdd }: {
-  courses: typeof MOCK_COURSES;
+  courses: Course[];
   locale: 'en' | 'id';
   onAdd: (task: Parameters<ReturnType<typeof useAppStore.getState>['addTask']>[0]) => void;
 }) {
